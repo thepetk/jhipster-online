@@ -21,6 +21,9 @@ projects:
       checkoutFrom:
         revision: openshift
 components:
+  - name: mariadb
+    kubernetes:
+      uri: src/main/kubernetes/mysql.yaml
   - name: tools
     container:
       image: 'quay.io/maximilianopizarro/jhipster-devspace'
@@ -73,13 +76,24 @@ components:
     volume:
       size: 512Mi
 commands:
-  - id: build-jh-studio
+  - id: package
     exec:
       label: 'Package the application with yarn and create MariaDB Instance'
       component: tools
       workingDir: ${PROJECT_SOURCE}
-      commandLine: 'oc apply -f src/main/kubernetes/mysql.yaml && yarn install && chmod 777 ./mvnw && echo "do not kill this task, run ./mvnw in other tasks" && yarn start'
-  - id: run-jh-studio
+      commandLine: 'yarn install && chmod 777 ./mvnw && echo "do not kill this task, run ./mvnw in other tasks" && yarn start'
+  - id: create-mariadb
+    apply:
+      component: mariadb
+  - id: deploy
+    composite:
+      commands:
+        - create-mariadb
+        - build-jh-studio
+      group:
+        kind: deploy
+        isDefault: true
+  - id: run
     exec:
       label: 'Run ./mvnw'
       component: tools
@@ -88,6 +102,3 @@ commands:
       group:
         kind: run
         isDefault: true
-events:
-  postStart:
-    - build-jh-studio
