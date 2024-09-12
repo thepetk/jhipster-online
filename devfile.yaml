@@ -10,11 +10,9 @@ metadata:
     - Java
     - JHipster
     - Angular
-    - OpenShift
-    - DevSpaces
-  versions:
-    - version: 2.33.0
-      default: true
+    - Spring
+  language: Java
+  projectType: 'springboot'      
 projects:
   - name: jhipster-online
     git:
@@ -43,21 +41,21 @@ components:
           name: backend
           protocol: https
           targetPort: 8080
-        - exposure: public
+        - exposure: none
           name: debug
           targetPort: 4200
-        - exposure: public
+        - exposure: none
           name: frontend
           protocol: https
           targetPort: 9000
-        - exposure: public
+        - exposure: none
           name: debug-frontend
           protocol: https
           targetPort: 9001
-        - exposure: public
+        - exposure: none
           name: browser-sync
           protocol: https
-          targetPort: 3001
+          targetPort: 3001                    
       env:
         - value: '-XX:MaxRAMPercentage=50.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xms20m -Djava.security.egd=file:/dev/./urandom -Duser.home=/home/jboss'
           name: JAVA_OPTS
